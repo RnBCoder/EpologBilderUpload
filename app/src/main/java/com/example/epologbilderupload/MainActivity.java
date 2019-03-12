@@ -34,6 +34,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        final Button btn_Barcode = findViewById(R.id.BTN_Barcode);    //assign BTN_Barcode to button object
+        btn_Barcode.setOnClickListener(new View.OnClickListener() {  //OnClick Listener
+            @Override
+            public void onClick(View v) {
+                startActivityBarcode();                        //start Intent to take Photo
+            }
+        });
+
+    }
+
+    private void startActivityBarcode() {
+        Intent intent = new Intent(this,BarcodeActivity.class);
+        startActivity(intent);
     }
 
     private void dispatchTakePictureIntent() {
