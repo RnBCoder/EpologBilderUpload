@@ -26,21 +26,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button btn_Kamera = findViewById(R.id.BTN_Kamera);    //assign BTN_Kamera to button object
-        btn_Kamera.setOnClickListener(new View.OnClickListener() {  //OnClick Listener
-            @Override
-            public void onClick(View v) {
-                dispatchTakePictureIntent();                        //start Intent to take Photo
-            }
+        final Button btn_Kamera = findViewById(R.id.BTN_Kamera);        //assign BTN_Kamera to button object
+                                                                        //OnClick Listener
+        btn_Kamera.setOnClickListener(v -> {
+            dispatchTakePictureIntent();                                //start Intent to take Photo
         });
 
 
-        final Button btn_Barcode = findViewById(R.id.BTN_Barcode);    //assign BTN_Barcode to button object
-        btn_Barcode.setOnClickListener(new View.OnClickListener() {  //OnClick Listener
-            @Override
-            public void onClick(View v) {
-                startActivityBarcode();                        //start Intent to take Photo
-            }
+        final Button btn_Barcode = findViewById(R.id.BTN_Barcode);      //assign BTN_Barcode to button object
+                                                                        //OnClick Listener
+        btn_Barcode.setOnClickListener(v -> {
+            startActivityBarcode();                                     //start Intent to take Photo
         });
 
     }
