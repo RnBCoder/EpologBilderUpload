@@ -1,6 +1,7 @@
 package com.example.epologbilderupload;
 
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
+
             }
         }
     }
@@ -91,6 +94,15 @@ public class MainActivity extends AppCompatActivity {
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
+
+
+
     }
+
 }
 
+    //String mString = "Test";                          https://stackoverflow.com/questions/27732781/how-to-write-exif-data-to-image-in-android
+       // new ExifInterface(image.getAbsolutePath());
+   // ExifInterface exif;
+       // exif.setAttribute("UserComment", mString);
+        //exif.saveAttributes();

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.vision.CameraSource;
@@ -36,10 +37,11 @@ public class BarcodeActivity extends AppCompatActivity {
 
         surfaceView = findViewById(R.id.camerapreview);
         textView = findViewById(R.id.TV_Camera);
+
         RxPermissions rxPermissions = new RxPermissions(this);
 
         barcodeDetector = new BarcodeDetector.Builder(this)
-                .setBarcodeFormats(Barcode.EAN_8).build();
+                .setBarcodeFormats(Barcode.ALL_FORMATS).build();
 
 
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
@@ -88,6 +90,8 @@ public class BarcodeActivity extends AppCompatActivity {
 
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
+
+
                 final SparseArray<Barcode> qrCodes = detections.getDetectedItems();
 
                 if (qrCodes.size()!=0){
@@ -95,6 +99,7 @@ public class BarcodeActivity extends AppCompatActivity {
                         Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                         vibrator.vibrate(1000);
                         textView.setText(qrCodes.valueAt(0).displayValue);
+
                     });
                 }
             }
