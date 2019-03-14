@@ -1,7 +1,9 @@
 package com.example.epologbilderupload;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -29,11 +31,13 @@ public class BarcodeActivity extends AppCompatActivity {
     TextView textView;
     BarcodeDetector barcodeDetector;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode);
 
+        String BarcodeNr2 = getIntent().getStringExtra("temp"); //does nothing just testing around
 
         surfaceView = findViewById(R.id.camerapreview);
         textView = findViewById(R.id.TV_Camera);
@@ -45,13 +49,13 @@ public class BarcodeActivity extends AppCompatActivity {
 
 
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
-                .setRequestedPreviewSize(1920, 1080)
+                .setRequestedPreviewSize(1280, 720)
                 .setAutoFocusEnabled(true)
                 .build();
 
 
-
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @SuppressLint("MissingPermission")
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
 
@@ -94,16 +98,17 @@ public class BarcodeActivity extends AppCompatActivity {
 
                 final SparseArray<Barcode> qrCodes = detections.getDetectedItems();
 
-                if (qrCodes.size()!=0){
+
+                if (qrCodes.size() != 0) {
                     textView.post(() -> {
-                        Vibrator vibrator = (Vibrator)getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                         vibrator.vibrate(1000);
-                        textView.setText(qrCodes.valueAt(0).displayValue);
+                        textView.setText(qrCodes.valueAt(0).displayValue);  //Need this Value in MainActivity how???
 
                     });
                 }
             }
+
         });
     }
-
 }

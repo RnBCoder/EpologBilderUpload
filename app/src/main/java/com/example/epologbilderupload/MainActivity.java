@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_TAKE_PHOTO = 1;
+    String BarcodeNr = "Kein Barcode eingelesen";
 
 
     @Override
@@ -40,10 +42,12 @@ public class MainActivity extends AppCompatActivity {
             startActivityBarcode();                                     //start Intent to take Photo
         });
 
+        TextView textView = findViewById(R.id.TV_Barcode);
+        textView.setText(BarcodeNr);
     }
 
     private void startActivityBarcode() {
-        Intent intent = new Intent(this,BarcodeActivity.class);
+        Intent intent = new Intent(this,BarcodeActivity.class).putExtra("temp", BarcodeNr);
         startActivity(intent);
     }
 
