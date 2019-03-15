@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     String currentPhotoPath;
 
@@ -110,3 +112,7 @@ public class MainActivity extends AppCompatActivity {
    // ExifInterface exif;
        // exif.setAttribute("UserComment", mString);
         //exif.saveAttributes();
+
+
+// https://stackoverflow.com/questions/11600988/uploading-a-file-to-a-ftp-server-from-android-phone
+//für ftp Upload
