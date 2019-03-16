@@ -55,7 +55,6 @@ public class BarcodeActivity extends AppCompatActivity {
 
 
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @SuppressLint("MissingPermission")
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
 

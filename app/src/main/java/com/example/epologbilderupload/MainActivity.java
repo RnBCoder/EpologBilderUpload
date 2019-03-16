@@ -1,16 +1,15 @@
 package com.example.epologbilderupload;
 
 import android.content.Intent;
-import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import org.jibble.simpleftp.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
             startActivityBarcode();                                     //start Intent to take Photo
         });
 
-        TextView textView = findViewById(R.id.TV_Barcode);
-        textView.setText(BarcodeNr);
+
     }
 
     private void startActivityBarcode() {
@@ -72,9 +70,36 @@ public class MainActivity extends AppCompatActivity {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
 
-
             }
         }
+    }
+
+
+    private void ftpUpload(){                           //http://www.jibble.org/simpleftp/
+
+        try {
+            SimpleFTP ftp = new SimpleFTP();
+
+            // Connect to an FTP server on port 21.
+            ftp.connect("ftp.somewhere.net", 21, "username", "password");
+
+            // Set binary mode.
+            ftp.bin();
+
+            // Change to a new working directory on the FTP server.
+            ftp.cwd("web");
+
+            // Upload some files.
+            ftp.stor(new File(currentPhotoPath));
+
+
+            // Quit from the FTP server.
+            ftp.disconnect();
+        }
+        catch (IOException e) {
+
+        }
+
     }
 
 
@@ -112,7 +137,3 @@ public class MainActivity extends AppCompatActivity {
    // ExifInterface exif;
        // exif.setAttribute("UserComment", mString);
         //exif.saveAttributes();
-
-
-// https://stackoverflow.com/questions/11600988/uploading-a-file-to-a-ftp-server-from-android-phone
-//für ftp Upload
