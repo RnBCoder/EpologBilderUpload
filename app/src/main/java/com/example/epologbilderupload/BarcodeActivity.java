@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SyncResult;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -36,8 +37,6 @@ public class BarcodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode);
-
-        String BarcodeNr2 = getIntent().getStringExtra("temp"); //does nothing just testing around
 
         surfaceView = findViewById(R.id.camerapreview);
         textView = findViewById(R.id.TV_Camera);
@@ -85,6 +84,9 @@ public class BarcodeActivity extends AppCompatActivity {
             }
         });
 
+
+
+
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
@@ -96,6 +98,8 @@ public class BarcodeActivity extends AppCompatActivity {
 
 
                 final SparseArray<Barcode> qrCodes = detections.getDetectedItems();
+                Barcode result = qrCodes.valueAt(0);
+                String Sresult = result.rawValue;
 
 
                 if (qrCodes.size() != 0) {
@@ -110,4 +114,5 @@ public class BarcodeActivity extends AppCompatActivity {
 
         });
     }
+
 }
