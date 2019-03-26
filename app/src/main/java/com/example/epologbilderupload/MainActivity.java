@@ -3,11 +3,13 @@ package com.example.epologbilderupload;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
@@ -15,15 +17,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-
 import org.jibble.simpleftp.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -37,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
     CameraSource cameraSource;
     TextView textView;
     BarcodeDetector barcodeDetector;
+    String currentPhotoPath;
+    File storageDir;
+    String imageFileName;
+    String Sresult;
 
 
     @Override
@@ -46,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         final Button btn_Kamera = findViewById(R.id.BTN_Kamera);        //assign BTN_Kamera to button object
         //OnClick Listener
-        btn_Kamera.setOnClickListener(v -> {
-            dispatchTakePictureIntent();                                //start Intent to take Photo
+        btn_Kamera.setOnClickListener(v -> {                            //assign BTN_Kamera OnClick
+            dispatchTakePictureIntent();
+
+
         });
 
         //Ab hier Barcode Scan funktion
@@ -108,15 +113,15 @@ public class MainActivity extends AppCompatActivity {
 
 
                 final SparseArray<Barcode> qrCodes = detections.getDetectedItems();
-                Barcode result = qrCodes.valueAt(0);
-                String Sresult = result.rawValue;
 
 
                 if (qrCodes.size() != 0) {
                     textView.post(() -> {
                         Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                         vibrator.vibrate(1000);
-                        textView.setText(qrCodes.valueAt(0).displayValue);  //Need this Value in MainActivity how???
+                        textView.setText(qrCodes.valueAt(0).displayValue);
+                        Barcode result = qrCodes.valueAt(0);
+                        Sresult = result.rawValue;
 
                     });
                 }
@@ -147,20 +152,18 @@ public class MainActivity extends AppCompatActivity {
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                String path = photoURI.getPath();
 
             }
         }
     }
 
-    String currentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp;
         timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        imageFileName = "JPEG_" + timeStamp;
+        storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = null;
         try {
             image = File.createTempFile(
@@ -179,8 +182,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        TextView TV_Barcode = findViewById(R.id.TV_Barcode);
 
-//Ab hier FTP und Exif Kram
+        if (requestCode == REQUEST_TAKE_PHOTO){
+
+            if (resultCode == RESULT_OK) {
+
+                TV_Barcode.setText(Sresult);
+
+                WriteExif();
+
+            }
+        }
+
+    }
+
+
+    //Ab hier FTP und Exif Kram
 
 
     private void ftpUpload() {                           //http://www.jibble.org/simpleftp/
@@ -208,11 +229,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    private void WriteExif(){
+                                    //https://stackoverflow.com/questions/27732781/how-to-write-exif-data-to-image-in-android
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(currentPhotoPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        exif.setAttribute("UserComment",Sresult);
+        try {
+            exif.saveAttributes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
 
 
-    //String mString = "Test";                          https://stackoverflow.com/questions/27732781/how-to-write-exif-data-to-image-in-android
-       // new ExifInterface(image.getAbsolutePath());
-   // ExifInterface exif;
-       // exif.setAttribute("UserComment", mString);
-        //exif.saveAttributes();
